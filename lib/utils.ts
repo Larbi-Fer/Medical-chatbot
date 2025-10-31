@@ -82,6 +82,13 @@ export function searchForMedicine(searchTerm: string) {
               text: [
                 match[0].composition
               ]
+            },
+            {
+              type: 'description',
+              title: 'Side Effects',
+              text: [
+                match[0].side_effects
+              ]
             }
           ]]
         } : {}
