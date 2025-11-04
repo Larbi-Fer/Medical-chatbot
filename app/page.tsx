@@ -39,7 +39,8 @@ export default function Home() {
     e.preventDefault();
     if (!input.trim()) return;
     
-    setMessages([...messages, {sender: 'user', message: input, id: Date.now()}]);
+    const newMsgId = Date.now()
+    setMessages([...messages, {sender: 'user', message: input, id: newMsgId}]);
     setInput("");
 
     scrollButtom();
@@ -51,7 +52,7 @@ export default function Home() {
 
       setMessages([
         ...messages,
-        {sender: 'user', message: input, id: Math.random()},
+        {sender: 'user', message: input, id: newMsgId},
         {message: data, id: Date.now(), sender: 'bot'}]
       );
       setLoading(false);
@@ -61,14 +62,14 @@ export default function Home() {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-900 text-gray-100 max-w-[1200px] m-auto">
+    <div className="h-screen flex flex-col bg-gray-900 text-gray-100">
       {/* Header */}
       <header className="p-4 bg-gray-800 text-center text-xl font-semibold border-b border-gray-700">
         Medical Chat
       </header>
 
       {/* Chat Messages */}
-      <main className="flex-1 overflow-y-auto p-4 space-y-3" ref={mainRef}>
+      <main className="flex-1 overflow-y-auto p-4 space-y-3 max-w-[1200px] m-auto" ref={mainRef}>
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -78,7 +79,7 @@ export default function Home() {
           >
             { msg.sender == 'user' ?
               <div
-                className='max-w-xs px-4 py-2 rounded-lg bg-blue-600 text-white'
+                className='max-w-xs px-4 py-2 rounded-lg bg-blue-600 text-white rise'
               >
                 {msg.message}
               </div>
@@ -88,7 +89,7 @@ export default function Home() {
         ))}
         {loading && (
           <div
-            className='flex justify-start'
+            className='flex justify-start rise'
           >
             <div
               className='max-w-xs px-4 py-2 rounded-lg bg-gray-700 text-gray-200'
@@ -100,25 +101,27 @@ export default function Home() {
       </main>
 
       {/* Input Box */}
-      <form
-        onSubmit={sendMessage}
-        className="p-4 bg-gray-800 border-t border-gray-700 flex"
-      >
-        <input
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Type your message..."
-          className="flex-1 p-2 rounded-md bg-gray-700 text-gray-100 outline-none"
-        />
-        <button
-          type="submit"
-          disabled={loading}
-          className="ml-2 px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-500 cursor-pointer"
+      <div className="max-w-[1200px] w-full m-auto">
+        <form
+          onSubmit={sendMessage}
+          className="p-4 bg-gray-800 border-t border-gray-700 flex"
         >
-          Send
-        </button>
-      </form>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your message..."
+            className="flex-1 p-2 rounded-md bg-gray-700 text-gray-100 outline-none"
+          />
+          <button
+            type="submit"
+            disabled={loading}
+            className="ml-2 px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-500 cursor-pointer"
+          >
+            Send
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

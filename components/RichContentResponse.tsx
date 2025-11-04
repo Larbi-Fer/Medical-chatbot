@@ -3,11 +3,11 @@ const RichContentResponse = ({ content }: { content: CustomResult[] }) => {
   return (
     content.map((msg, i) => (
       msg.message == 'text' ?
-        <div key={i} className='max-w-xs px-4 py-2 rounded-lg bg-gray-700 text-gray-200'>
+        <div key={i} className='max-w-xs px-4 py-2 rounded-lg bg-gray-700 text-gray-200 rise'>
           {msg.text.text.map((t, i) => <div key={i}>{t}</div>)}
         </div> :
           msg.payload.fields.richContent ? 
-            <div key={i} className="bg-gray-800 rounded">
+            <div key={i} className="bg-gray-800 rounded rise">
               <CardContent values={msg.payload.fields.richContent.listValue.values[0].listValue.values} />
             </div>
           : null
@@ -19,7 +19,7 @@ const RichContentResponse = ({ content }: { content: CustomResult[] }) => {
 const CardContent = ({values}: {values: FieldsValue[]}) => {
   const image = values.find(v => v.structValue.fields.type.stringValue == 'image')
   if (image) return (
-    <div className="grid grid-cols-2">
+    <div className="grid md:grid-cols-2 grid-cols-1">
       <div>
         <img
           src={image.structValue.fields.rawUrl.stringValue}
