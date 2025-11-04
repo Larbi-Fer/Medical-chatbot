@@ -16,7 +16,7 @@ type CustomResult = {
             richContent: {
                 listValue: {
                     values: {
-                        listValues: { values: FieldsValue[] }
+                        listValue: { values: FieldsValue[] }
                     }[]
                 }
             }
@@ -24,18 +24,35 @@ type CustomResult = {
     }
 }
 
-type FieldsValue = {
-    type: { stringValue: 'image' }
+interface FieldsValue {
+    structValue: {
+        fields: Values
+    }
+}
+
+type Values = {
+    type: { stringValue: 'image' | 'info' | 'divider' |  'description' | 'chips' }
+
+    // image
     rawUrl: { stringValue: string }
     accessibilityText: { stringValue: string }
-} | {
-    type: { stringValue: 'info' }
+
+    // info & description
     title: { stringValue: string }
+    // info
     subtitle: { stringValue: string }
-} | {
-    type: { stringValue: 'divider' }
-} | {
-    type: { stringValue: 'description' }
-    title: { stringValue: string }
+
+    // description
     text: { listValue: {values: {stringValue: string}[]} }
+
+    // chips
+    options: {
+        listValue: {
+            values: {
+                structValue: {
+                    fields: {text: {stringValue: string}}
+                }
+            }[]
+        }
+    }
 }

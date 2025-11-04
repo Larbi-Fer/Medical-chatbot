@@ -1,7 +1,8 @@
 'use client'
 
+import RichContentResponse from "@/components/RichContentResponse";
 import { useSession } from "@/lib/useSession";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 
 const sendMsg = async(message: string, sessionId: string) => {
   const response = await fetch("/api/chat", {
@@ -28,16 +29,20 @@ export default function Home() {
 
 
   const sessionId = useSession()
+  const mainRef = useRef<HTMLElement>(null)
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false)
+
+  const scrollButtom = () => setTimeout(() => mainRef.current?.scroll({ behavior: 'smooth', top: mainRef.current.scrollHeight }), 100)
 
   const sendMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
     
-    const newMessage = { id: Date.now(), message: input, sender: "user" };
     setMessages([...messages, {sender: 'user', message: input, id: Date.now()}]);
     setInput("");
+
+    scrollButtom();
     
     // Submit the message
     (async() => {
@@ -49,7 +54,8 @@ export default function Home() {
         {sender: 'user', message: input, id: Math.random()},
         {message: data, id: Date.now(), sender: 'bot'}]
       );
-      setLoading(false)
+      setLoading(false);
+      scrollButtom();
     })()
 
   };
@@ -58,30 +64,26 @@ export default function Home() {
     <div className="h-screen flex flex-col bg-gray-900 text-gray-100 max-w-[1200px] m-auto">
       {/* Header */}
       <header className="p-4 bg-gray-800 text-center text-xl font-semibold border-b border-gray-700">
-        Simple Chat
+        Medical Chat
       </header>
 
       {/* Chat Messages */}
-      <main className="flex-1 overflow-y-auto p-4 space-y-3">
+      <main className="flex-1 overflow-y-auto p-4 space-y-3" ref={mainRef}>
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`flex ${
-              msg.sender === "user" ? "justify-end" : "justify-start"
+              msg.sender === "user" ? "justify-end" : "justify-start w-[80%]"
             }`}
           >
-            <div
-              className={`max-w-xs px-4 py-2 rounded-lg ${
-                msg.sender === "user"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-700 text-gray-200"
-              }`}
-            >
-              { msg.sender == 'user' ?
-                msg.message
-                : msg.message.reply
-              }
-            </div>
+            { msg.sender == 'user' ?
+              <div
+                className='max-w-xs px-4 py-2 rounded-lg bg-blue-600 text-white'
+              >
+                {msg.message}
+              </div>
+              : <div className="gap-3 flex-col flex w-full"><RichContentResponse content={msg.message.result} /></div>
+            }
           </div>
         ))}
         {loading && (
