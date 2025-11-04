@@ -3,24 +3,54 @@
 import { useSession } from "@/lib/useSession";
 import { FormEvent, useState } from "react";
 
+const sendMsg = async(message: string, sessionId: string) => {
+  const response = await fetch("/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message,
+      sessionId
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Server error: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data as Message;
+}
+
 export default function Home() {
-  const [messages, setMessages] = useState([
-    { id: 1, reply: "Hey there!", sender: "bot" },
-    { id: 2, reply: "Hi! How are you?", sender: "user" },
-  ]);
+  const [messages, setMessages] = useState<({id: number, message: Message, sender: 'bot'} | {id: number, message: string, sender: 'user'})[]>([]);
+
+
   const sessionId = useSession()
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false)
 
   const sendMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
     
-    const newMessage = { id: Date.now(), reply: input, sender: "user" };
-    setMessages([...messages, newMessage]);
+    const newMessage = { id: Date.now(), message: input, sender: "user" };
+    setMessages([...messages, {sender: 'user', message: input, id: Date.now()}]);
     setInput("");
     
     // Submit the message
-    console.log(sessionId);
+    (async() => {
+      setLoading(true)
+      const data = await sendMsg(input, sessionId!)
+
+      setMessages([
+        ...messages,
+        {sender: 'user', message: input, id: Math.random()},
+        {message: data, id: Date.now(), sender: 'bot'}]
+      );
+      setLoading(false)
+    })()
 
   };
 
@@ -47,10 +77,24 @@ export default function Home() {
                   : "bg-gray-700 text-gray-200"
               }`}
             >
-              {msg.reply}
+              { msg.sender == 'user' ?
+                msg.message
+                : msg.message.reply
+              }
             </div>
           </div>
         ))}
+        {loading && (
+          <div
+            className='flex justify-start'
+          >
+            <div
+              className='max-w-xs px-4 py-2 rounded-lg bg-gray-700 text-gray-200'
+            >
+              Loading ...
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Input Box */}
@@ -67,6 +111,7 @@ export default function Home() {
         />
         <button
           type="submit"
+          disabled={loading}
           className="ml-2 px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-500 cursor-pointer"
         >
           Send
