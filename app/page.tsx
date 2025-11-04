@@ -1,5 +1,6 @@
 'use client'
 
+import { useSession } from "@/lib/useSession";
 import { FormEvent, useState } from "react";
 
 export default function Home() {
@@ -7,17 +8,19 @@ export default function Home() {
     { id: 1, reply: "Hey there!", sender: "bot" },
     { id: 2, reply: "Hi! How are you?", sender: "user" },
   ]);
+  const sessionId = useSession()
   const [input, setInput] = useState("");
 
   const sendMessage = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim()) return;
-
+    
     const newMessage = { id: Date.now(), reply: input, sender: "user" };
     setMessages([...messages, newMessage]);
     setInput("");
-
+    
     // Submit the message
+    console.log(sessionId);
 
   };
 
