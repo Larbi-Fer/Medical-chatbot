@@ -40,7 +40,7 @@ export default function Home() {
   return (
     <div className="h-screen flex flex-col bg-gray-900 text-gray-100">
       {/* Header */}
-      <header className="p-4 bg-[#36415350] text-center text-xl font-semibold border-b border-gray-700 backdrop-blur-md">
+      <header className="p-4 bg-[#36415380] fixed w-full z-10 text-center text-xl font-semibold border-b border-gray-700 backdrop-blur-lg">
         Medical Chat
       </header>
 
@@ -51,8 +51,8 @@ export default function Home() {
             <div className="gap-3 flex-col flex w-full items-center text-lg"><RichContentResponse content={messages[0].message.result} /></div>
           </div>
         :
-        <div className="max-w-[1200px] w-full h-full mx-auto overflow-y-auto p-4 space-y-3 mb-20" ref={mainRef}>
-          <main className="flex-1">
+        <div className="max-w-[1200px] w-full h-full mx-auto overflow-y-auto p-4 space-y-3 mb-20 pt-20" ref={mainRef}>
+          <main className="flex-1 gap-2 grid">
             {messages.map((msg) => (
               <div
                 key={msg.id}
@@ -66,7 +66,7 @@ export default function Home() {
                   >
                     {msg.message}
                   </div>
-                  : <div className="gap-3 flex-col flex w-full"><RichContentResponse content={msg.message.result} /></div>
+                  : <div className="gap-1 flex-col flex w-full"><RichContentResponse content={msg.message.result} /></div>
                 }
               </div>
             ))}
