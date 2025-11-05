@@ -36,8 +36,6 @@ const CardContent = ({values}: {values: FieldsValue[]}) => {
 }
 
 const FieldsToNode = ({value}: {value: FieldsValue}) => {
-  console.log(value.structValue.fields.type.stringValue);
-  
   switch (value.structValue.fields.type.stringValue) {
     case 'image':
       return <div className="m-2">
