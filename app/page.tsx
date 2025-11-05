@@ -1,43 +1,32 @@
 'use client'
 
 import RichContentResponse from "@/components/RichContentResponse";
+import { sendMsg } from "@/lib/api";
 import { useSession } from "@/lib/useSession";
+import { useMessage } from "@/store/useMessgae";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
-const sendMsg = async(message: string, sessionId: string) => {
-  const response = await fetch("/api/chat", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      message,
-      sessionId
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Server error: ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data as Message;
-}
-
 export default function Home() {
-  const [messages, setMessages] = useState<({id: number, message: Message, sender: 'bot'} | {id: number, message: string, sender: 'user'})[]>([]);
+  // const [messages, setMessages] = useState<({id: number, message: Message, sender: 'bot'} | {id: number, message: string, sender: 'user'})[]>([]);
+  const {
+    input, setInput,
+    loading, setLoading,
+    messages, setMessages, sendMessage,
+    setObjectRef: setObjectRef, sessionId, loadSession
+  } = useMessage()
 
 
-  const sessionId = useSession()
+  // const sessionId = useSession()
   const mainRef = useRef<HTMLDivElement>(null)
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false)
-
-  const scrollButtom = () => setTimeout(() => mainRef.current?.scroll({ behavior: 'smooth', top: mainRef.current.scrollHeight }), 100)
+  // const [input, setInput] = useState("");
+  // const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    loadSession();
     (async() => {
       setLoading(true)
+      setObjectRef(mainRef)
+
       const data = await sendMsg('Hi', sessionId!)
 
       setMessages([
@@ -47,32 +36,6 @@ export default function Home() {
       setLoading(false);
     })()
   }, [])
-  
-
-  const sendMessage = (e: FormEvent<HTMLFormElement>, msg?: string) => {
-    e.preventDefault();
-    if (!msg && !input.trim()) return;
-    
-    const newMsgId = Date.now()
-    setMessages([...messages, {sender: 'user', message: msg || input, id: newMsgId}]);
-    setInput("");
-
-    scrollButtom();
-    
-    // Submit the message
-    (async() => {
-      setLoading(true)
-      const data = await sendMsg(msg || input, sessionId!)
-
-      setMessages([
-        ...messages,
-        {sender: 'user', message: msg || input, id: newMsgId},
-        {message: data, id: Date.now(), sender: 'bot'}]
-      );
-      setLoading(false);
-      scrollButtom();
-    })()
-  };
 
   return (
     <div className="h-screen flex flex-col bg-gray-900 text-gray-100">
@@ -139,7 +102,7 @@ export default function Home() {
       }
 
       {/* Input Box */}
-      <div className={`max-w-[1200px] transition w-full absolute left-[50%] translate-x-[-50%] ${
+      <div className={`max-w-[1200px] transition w-full fixed left-[50%] translate-x-[-50%] ${
         messages.length <= 1 ? 'top-[50%] translate-y-[-50%]' : 'bottom-0'
       }`}>
         <form
@@ -154,6 +117,7 @@ export default function Home() {
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
             className="flex-1 p-2 rounded-md bg-gray-700 text-gray-100 outline-none"
+            autoFocus
           />
           <button
             type="submit"

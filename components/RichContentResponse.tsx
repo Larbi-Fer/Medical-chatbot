@@ -1,3 +1,4 @@
+import { useMessage } from "@/store/useMessgae"
 
 const RichContentResponse = ({ content }: { content: CustomResult[] }) => {
   return (
@@ -36,6 +37,8 @@ const CardContent = ({values}: {values: FieldsValue[]}) => {
 }
 
 const FieldsToNode = ({value}: {value: FieldsValue}) => {
+  const {sendMessage} = useMessage()
+
   switch (value.structValue.fields.type.stringValue) {
     case 'image':
       return <div className="m-2">
@@ -73,6 +76,7 @@ const FieldsToNode = ({value}: {value: FieldsValue}) => {
             if (parent) parent.style.display = "none";
 
             // Send a message
+            sendMessage(e, option.structValue.fields.text.stringValue)
           }}
         >
           {option.structValue.fields.text.stringValue}
