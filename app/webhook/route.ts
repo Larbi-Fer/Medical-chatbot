@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { searchForMedicine } from '@/lib/utils';
 
 export async function GET(request: Request) {
-  // For example, fetch data from your DB here
   const data = {
     status: 'OK'
   };
@@ -14,7 +13,6 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    // Parse request body
     const body = await request.json();
     const searchTerm = body.queryResult?.parameters?.medicine?.toLowerCase();
 
