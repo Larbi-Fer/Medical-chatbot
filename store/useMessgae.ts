@@ -66,7 +66,6 @@ export const useMessage = create<MyStore>((set, get) => ({
   },
 
   sendMsg: async (message, sessionId) => {
-    console.log(sessionId)
     return await sendMsg(message, sessionId);
   },
 

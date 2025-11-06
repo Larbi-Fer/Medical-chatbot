@@ -47,8 +47,8 @@ export default function Home() {
 
       {/* Chat Messages */}
       { messages.length == 1 && messages[0].sender == 'bot' ?
-          <div className="max-w-[1200px] w-full mx-auto overflow-y-auto p-4 space-y-3 mb-20 h-[40vh] flex items-center">
-            <div className="gap-3 flex-col flex w-full items-center text-lg"><RichContentResponse content={messages[0].message.result} /></div>
+          <div className="max-w-[1200px] w-full mx-auto overflow-y-auto p-4 pt-24 space-y-3 mb-20 h-[40vh] flex items-center">
+            <div className="gap-0.5 flex-col flex w-full items-center text-lg"><RichContentResponse content={messages[0].message.result} /></div>
           </div>
         :
         <div className="max-w-[1200px] w-full h-full mx-auto overflow-y-auto p-4 space-y-3 mb-20 pt-20" ref={mainRef}>
@@ -66,7 +66,15 @@ export default function Home() {
                   >
                     {msg.message}
                   </div>
-                  : <div className="gap-1 flex-col flex w-full"><RichContentResponse content={msg.message.result} /></div>
+                  : <div className="relative">
+                      <div className="gap-0.5 flex-col flex w-full">
+                        <RichContentResponse content={msg.message.result} />
+                      </div>
+                      <img
+                        src='/logo.webp'
+                        alt="logo"
+                        className={`rounded-full w-8 h-8 absolute -left-4 -bottom-4 border-4 border-gray-900 rise d${msg.message.result.length}`} />
+                    </div>
                 }
               </div>
             ))}
@@ -84,7 +92,7 @@ export default function Home() {
               </div>
               :
               <div
-                className='flex justify-start rise'
+                className='flex justify-start rise d2'
               >
                 <div
                   className='max-w-xs px-4 py-2'
