@@ -4,6 +4,7 @@ import RichContentResponse from "@/components/RichContentResponse";
 import { sendMsg } from "@/lib/api";
 import { useSession } from "@/lib/useSession";
 import { useMessage } from "@/store/useMessgae";
+import { SendIcon } from "lucide-react";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 export default function Home() {
@@ -45,9 +46,8 @@ export default function Home() {
       </header>
 
       {/* Chat Messages */}
-      { messages.length == 1 ?
+      { messages.length == 1 && messages[0].sender == 'bot' ?
           <div className="max-w-[1200px] w-full mx-auto overflow-y-auto p-4 space-y-3 mb-20 h-[40vh] flex items-center">
-            {/* @ts-ignore */}
             <div className="gap-3 flex-col flex w-full items-center text-lg"><RichContentResponse content={messages[0].message.result} /></div>
           </div>
         :
@@ -102,8 +102,8 @@ export default function Home() {
       }
 
       {/* Input Box */}
-      <div className={`max-w-[1200px] transition w-full fixed left-[50%] translate-x-[-50%] ${
-        messages.length <= 1 ? 'top-[50%] translate-y-[-50%]' : 'bottom-0'
+      <div className={`max-w-[1200px] transition duration-500 w-full fixed left-[50%] translate-x-[-50%] z-10 ${
+        messages.length <= 1 ? 'top-[50%] translate-y-[-50%]' : 'bottom-0 translate-y-0'
       }`}>
         <form
           onSubmit={sendMessage}
@@ -116,15 +116,15 @@ export default function Home() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 p-2 rounded-md bg-gray-700 text-gray-100 outline-none"
+            className="flex-1 p-2 pr-12 rounded-lg bg-gray-700 text-gray-100 outline-none"
             autoFocus
           />
           <button
             type="submit"
             disabled={loading}
-            className="ml-2 px-4 py-2 bg-blue-600 rounded-md hover:bg-blue-500 cursor-pointer"
+            className="ml-2 p-2 transition hover:bg-gray-800 rounded-full cursor-pointer absolute right-5"
           >
-            Send
+            <SendIcon />
           </button>
         </form>
 
