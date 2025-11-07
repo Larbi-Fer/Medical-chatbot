@@ -77,3 +77,29 @@ body {
     animation-delay: 0.4s;
   }
 }
+
+/* Scrollbar */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #364153;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #333b49;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #364153 transparent;
+}
