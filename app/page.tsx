@@ -5,6 +5,7 @@ import { sendMsg } from "@/lib/api";
 import { useSession } from "@/lib/useSession";
 import { useMessage } from "@/store/useMessgae";
 import { SendIcon } from "lucide-react";
+import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
 export default function Home() {
@@ -24,6 +25,7 @@ export default function Home() {
 
   useEffect(() => {
     loadSession();
+    if (messages.length == 1) return;
     (async() => {
       setLoading(true)
       setObjectRef(mainRef)
@@ -116,7 +118,7 @@ export default function Home() {
         <form
           onSubmit={sendMessage}
           className={`p-4 flex ${
-            messages.length <= 1 ? '' : 'border-t border-gray-700'
+            messages.length <= 1 ? 'pb-2' : 'border-t border-gray-700'
           }`}
         >
           <input
@@ -137,25 +139,40 @@ export default function Home() {
         </form>
 
         {messages.length == 1 && (
-          <div className="flex gap-2">
-            <div className="flex items-center ml-10">Try this</div>
-            <button
-              className="block px-4 py-1 cursor-pointer transition m-1 bg-neutral-600 hover:bg-neutral-700 rounded-full"
-              onClick={e => {
-                // @ts-ignore
-                sendMessage(e, 'Looking for apex')
-              }}
-              >Looking for apex</button>
-            <button
-              className="block px-4 py-1 cursor-pointer transition m-1 bg-neutral-600 hover:bg-neutral-700 rounded-full"
-              onClick={e => {
-                // @ts-ignore
-                sendMessage(e, 'What is apex')
-              }}
-              >What is apex</button>
+          <div className="flex justify-between items-center">
+            <div className="flex gap-2">
+              <div className="flex items-center ml-5">Try this</div>
+              <button
+                className="block px-4 py-1 cursor-pointer transition m-1 bg-neutral-600 hover:bg-neutral-700 rounded-full"
+                onClick={e => {
+                  // @ts-ignore
+                  sendMessage(e, 'Looking for apex')
+                }}
+                >Looking for apex</button>
+              <button
+                className="block px-4 py-1 cursor-pointer transition m-1 bg-neutral-600 hover:bg-neutral-700 rounded-full"
+                onClick={e => {
+                  // @ts-ignore
+                  sendMessage(e, 'What is apex')
+                }}
+                >What is apex</button>
+            </div>
+
+            <label className="mr-5 text-gray-400">
+              By continuing, you acknowledge this chatbot is not a medical professional
+            </label>
           </div>
         )}
       </div>
+
+      {messages.length <= 1 && (
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-gray-400">
+          <Link className="hover:underline" href='/terms'>Terms</Link>{' | '}
+          <Link className="hover:underline" href='/privacy'>Privacy Policy</Link>{' | '}
+          <Link className="hover:underline" href='/disclaimer'>Disclaimer</Link>
+        </div>
+      )} 
+
     </div>
   );
 }
