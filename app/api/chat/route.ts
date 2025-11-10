@@ -54,9 +54,9 @@ export async function POST(req: Request) {
       const result = response.queryResult;
 
       return NextResponse.json({
-        reply: result?.fulfillmentText ?? "(no reply)",
-        intent: result?.intent?.displayName ?? "Unknown",
-        queryText: result.queryText,
+        reply: result?.fulfillmentText || "(no reply)",
+        intent: result?.intent?.displayName || "Unknown",
+        queryText: result.queryText ? `${result.queryText}  | ${Math.round(result.speechRecognitionConfidence*100)}%` : "(Not available)",
         result: result?.fulfillmentMessages
       });
     }
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     // ✅ Build session path (correct for @google-cloud/dialogflow)
     const sessionPath = sessionClient.projectAgentSessionPath(
       projectId,
-      sessionId ?? uuidV4()
+      sessionId || uuidV4()
     );
 
     // Request body
@@ -86,8 +86,8 @@ export async function POST(req: Request) {
     const result = response.queryResult;
 
     return NextResponse.json({
-      reply: result?.fulfillmentText ?? "(no reply)",
-      intent: result?.intent?.displayName ?? "Unknown",
+      reply: result?.fulfillmentText || "(no reply)",
+      intent: result?.intent?.displayName || "Unknown",
       result: result?.fulfillmentMessages
     });
   } catch (error) {

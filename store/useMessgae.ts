@@ -71,7 +71,8 @@ export const useMessage = create<MyStore>((set, get) => ({
 
   scrollButtom: () => {
     const {objectRef} = get()
-    setTimeout(() => objectRef.current?.scroll({ behavior: 'smooth', top: objectRef.current.scrollHeight }), 100)
+    
+    setTimeout(() => objectRef.current?.scroll({ behavior: 'smooth', top: objectRef.current.scrollHeight }), 150)
   },
 
   loadSession: () => {

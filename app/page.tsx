@@ -15,24 +15,17 @@ export default function Home() {
     input, setInput,
     loading, setLoading,
     messages, setMessages, sendMessage,
-    setObjectRef: setObjectRef, sessionId, loadSession
+    setObjectRef: setObjectRef, sessionId, loadSession, scrollButtom
   } = useMessage()
 
   const {
       startRecording,
       stopRecording,
-      togglePauseResume,
       recordingBlob,
       isRecording,
-      isPaused,
-      recordingTime,
     } = useAudioRecorder();
 
-
-  // const sessionId = useSession()
   const mainRef = useRef<HTMLDivElement>(null)
-  // const [input, setInput] = useState("");
-  // const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     loadSession();
@@ -59,6 +52,7 @@ export default function Home() {
 
     (async() => {
       setLoading(true)
+      scrollButtom();
       const data = await sendMsg(formData, sessionId!)
 
       setMessages([
@@ -66,6 +60,7 @@ export default function Home() {
         {id: Date.now(), message: data.queryText!, sender: 'user', audio: recordingBlob},
         {id: Date.now()+1, message: data, sender: 'bot'}
       ])
+      scrollButtom();
       setLoading(false)
     })()
   }, [recordingBlob])
@@ -74,7 +69,7 @@ export default function Home() {
   return (
     <div className="h-screen flex flex-col bg-gray-900 text-gray-100">
       {/* Header */}
-      <header className="p-4 bg-[#36415380] fixed w-full z-10 text-center text-xl font-semibold border-b border-gray-700 backdrop-blur-lg">
+      <header className="p-3 bg-[#36415380] fixed w-full z-10 text-center text-xl font-semibold border-b border-gray-700 backdrop-blur-lg">
         Medical Chat
       </header>
 
@@ -128,7 +123,7 @@ export default function Home() {
                 className='flex justify-start rise d2'
               >
                 <div
-                  className='max-w-xs px-4 py-2'
+                  className='max-w-xs px-4 py-2 mt-3'
                 >
                   <div className="flex items-center justify-center space-x-2">
                     <div className="dot bg-blue-500 w-3 h-3 rounded-full"></div>

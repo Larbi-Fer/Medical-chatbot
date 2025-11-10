@@ -38,8 +38,6 @@ const CardContent = ({values}: {values: FieldsValue[]}) => {
 
 const FieldsToNode = ({value, ord}: {value: FieldsValue, ord: number}) => {
   const {sendMessage} = useMessage()
-  console.log(ord);
-  
 
   switch (value.structValue.fields.type.stringValue) {
     case 'image':
