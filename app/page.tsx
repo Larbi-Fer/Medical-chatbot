@@ -2,9 +2,10 @@
 
 import RichContentResponse from "@/components/RichContentResponse";
 import { sendMsg } from "@/lib/api";
+import { useAudioRecorder } from "@/lib/useAudioRecorder";
 import { useSession } from "@/lib/useSession";
 import { useMessage } from "@/store/useMessgae";
-import { SendIcon } from "lucide-react";
+import { MicIcon, SendIcon, SquareIcon } from "lucide-react";
 import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 
@@ -16,6 +17,16 @@ export default function Home() {
     messages, setMessages, sendMessage,
     setObjectRef: setObjectRef, sessionId, loadSession
   } = useMessage()
+
+  const {
+      startRecording,
+      stopRecording,
+      togglePauseResume,
+      recordingBlob,
+      isRecording,
+      isPaused,
+      recordingTime,
+    } = useAudioRecorder();
 
 
   // const sessionId = useSession()
@@ -39,6 +50,26 @@ export default function Home() {
       setLoading(false);
     })()
   }, [])
+
+  useEffect(() => {
+    if (!recordingBlob) return
+
+    const formData = new FormData();
+    formData.append("audio", recordingBlob, "recording.wav");
+
+    (async() => {
+      setLoading(true)
+      const data = await sendMsg(formData, sessionId!)
+
+      setMessages([
+        ...messages,
+        {id: Date.now(), message: data.queryText!, sender: 'user', audio: recordingBlob},
+        {id: Date.now()+1, message: data, sender: 'bot'}
+      ])
+      setLoading(false)
+    })()
+  }, [recordingBlob])
+  
 
   return (
     <div className="h-screen flex flex-col bg-gray-900 text-gray-100">
@@ -130,6 +161,13 @@ export default function Home() {
             autoFocus
           />
           <button
+            type="button"
+            className="ml-2 p-2 transition hover:bg-gray-800 rounded-full cursor-pointer absolute right-15"
+            onClick={isRecording ? stopRecording : startRecording}
+          >
+            {isRecording ? <SquareIcon /> : <MicIcon />}
+          </button>
+          <button
             type="submit"
             disabled={loading}
             className="ml-2 p-2 transition hover:bg-gray-800 rounded-full cursor-pointer absolute right-5"
@@ -153,9 +191,9 @@ export default function Home() {
                 className="block px-4 py-1 cursor-pointer transition m-1 bg-neutral-600 hover:bg-neutral-700 rounded-full"
                 onClick={e => {
                   // @ts-ignore
-                  sendMessage(e, 'What is apex')
+                  sendMessage(e, 'What is your features')
                 }}
-                >What is apex</button>
+                >What is your features</button>
             </div>
 
             <label className="mr-5 text-gray-400">

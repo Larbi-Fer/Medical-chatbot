@@ -3,7 +3,7 @@ import { v4 as uuid_v4 } from 'uuid'
 import { RefObject } from 'react';
 import { create } from 'zustand';
 
-type MsgProps = { id: number; message: string; sender: 'user'; } | { id: number; message: Message; sender: 'bot'; };
+type MsgProps = { id: number; message: string; sender: 'user'; audio?: Blob } | { id: number; message: Message; sender: 'bot'; };
 
 interface MyStore {
   messages: MsgProps[];

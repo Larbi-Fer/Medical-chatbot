@@ -2,6 +2,7 @@ interface Message {
     intent: string
     reply: string
     result: CustomResult[]
+    queryText?: string
 }
 
 type CustomResult = {
