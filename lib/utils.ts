@@ -96,3 +96,56 @@ export function searchForMedicine(searchTerm: string) {
     ]
   }
 }
+
+export const searchForDiseasePrecaution = (searchTerm: string) => {
+  const csvPath = path.join(process.cwd(), 'data', 'Disease_precaution.csv');
+  const fileContent = fs.readFileSync(csvPath, 'utf8');
+
+  const records = parse(fileContent, {
+    columns: true,
+    skip_empty_lines: true,
+  });
+
+  let match: any = records.find((row: any) =>
+    row.Disease.toLowerCase() == searchTerm
+  );
+
+  if (match) {
+    const precaitions = []
+    let i = 1
+    for (const key in match) {
+      if (key == 'Disease') continue;
+      if (!Object.hasOwn(match, key)) continue;
+      const precaition = match[key];
+      if (!precaition) break;
+      precaitions.push(`${i}) ${precaition}`)
+      i++;
+    }
+
+    return {
+      fulfillmentMessages: [
+        {
+          payload: {
+            richContent: [[
+              {
+                type: 'description',
+                title: match.Disease + ' Precaitions',
+                text: precaitions
+              },
+            ]]
+          }
+        }
+      ]
+    }
+
+  } else {
+
+    return {
+      fulfillmentMessages: [
+        {
+          text: { text: [`Sorry, I couldn't find "${searchTerm}" in the list.`] },
+        },
+      ]
+    }
+  }
+}

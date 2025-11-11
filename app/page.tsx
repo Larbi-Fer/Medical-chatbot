@@ -172,8 +172,8 @@ export default function Home() {
         </form>
 
         {messages.length == 1 && (
-          <div className="flex justify-between items-center">
-            <div className="flex gap-2">
+          <div className="flex justify-between items-center text-sm">
+            <div className="flex gap-1">
               <div className="flex items-center ml-5">Try this</div>
               <button
                 className="block px-4 py-1 cursor-pointer transition m-1 bg-neutral-600 hover:bg-neutral-700 rounded-full"
@@ -189,6 +189,13 @@ export default function Home() {
                   sendMessage(e, 'What is your features')
                 }}
                 >What is your features</button>
+              <button
+                className="block px-4 py-1 cursor-pointer transition m-1 bg-neutral-600 hover:bg-neutral-700 rounded-full"
+                onClick={e => {
+                  // @ts-ignore
+                  sendMessage(e, 'What is heart attack precaution')
+                }}
+                >What is heart attack precaution</button>
             </div>
 
             <label className="mr-5 text-gray-400">
