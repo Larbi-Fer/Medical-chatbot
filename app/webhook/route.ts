@@ -14,20 +14,11 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const searchTerm = body.queryResult?.parameters?.diseases?.toLowerCase();
-    // const searchTerm = 'Heart attack'.toLowerCase();
     const intent = body.queryResult.intent.displayName
 
-    if (!searchTerm) {
-      return NextResponse.json(
-        { error: 'No medicine name provided.' },
-        { status: 400 }
-      );
-    }
-
     let res;
-    if (intent == 'FindMedicine') res = searchForMedicine(searchTerm);
-    else if (intent == 'FindPrecaution') res = searchForDiseasePrecaution(searchTerm)
+    if (intent == 'FindMedicine') res = searchForMedicine(body.queryResult?.parameters?.medicine?.toLowerCase());
+    else if (intent == 'FindPrecaution') res = searchForDiseasePrecaution(body.queryResult?.parameters?.diseases?.toLowerCase())
     else res = {
       fulfillmentMessages: [
         {
