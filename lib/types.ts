@@ -3,6 +3,7 @@ interface Message {
     reply: string
     result: CustomResult[]
     queryText?: string
+    confidence: number
 }
 
 type CustomResult = {

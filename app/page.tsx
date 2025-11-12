@@ -57,7 +57,7 @@ export default function Home() {
 
       setMessages([
         ...messages,
-        {id: Date.now(), message: data.queryText!, sender: 'user', audio: recordingBlob},
+        {id: Date.now(), message: data.queryText!, confidence: data.confidence, sender: 'user', audio: recordingBlob},
         {id: Date.now()+1, message: data, sender: 'bot'}
       ])
       scrollButtom();
@@ -90,9 +90,20 @@ export default function Home() {
               >
                 { msg.sender == 'user' ?
                   <div
-                    className='max-w-xs px-4 py-2 rounded-lg bg-blue-600 text-white rise'
+                    className='max-w-xs px-4 py-2 rounded-lg bg-blue-600 text-white rise relative'
                   >
                     {msg.message}
+                    {msg.confidence &&
+                      <div
+                        className="absolute -right-3 -bottom-3 text-xs rounded-full px-1 py-0.5"
+                        style={{
+                          backgroundColor: `hsl(${(msg.confidence / 100) * 120}, 100%, 30%)`
+                        }}
+                        title="confidence"
+                      >
+                        {msg.confidence}%
+                      </div>
+                    }
                   </div>
                   : <div className="relative">
                       <div className="gap-0.5 flex-col flex w-full">

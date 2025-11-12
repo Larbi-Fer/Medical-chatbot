@@ -56,7 +56,8 @@ export async function POST(req: Request) {
       return NextResponse.json({
         reply: result?.fulfillmentText || "(no reply)",
         intent: result?.intent?.displayName || "Unknown",
-        queryText: result.queryText ? `${result.queryText}  | ${Math.round(result.speechRecognitionConfidence*100)}%` : "(Not available)",
+        queryText: result.queryText ?? "(Not available)",
+        confidence: Math.round(result.speechRecognitionConfidence*100),
         result: result?.fulfillmentMessages
       });
     }
